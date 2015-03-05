@@ -1,0 +1,52 @@
+package com.zhaodj.foo.udp;
+
+import java.net.*;
+
+public class UDPServer {
+    private static final int PORT = 7000;
+    private DatagramSocket dataSocket;
+    private DatagramPacket dataPacket;
+    private byte receiveByte[];
+    private String receiveStr;
+
+    public UDPServer() {
+        Init();
+    }
+
+    public void Init() {
+        try {
+            dataSocket = new DatagramSocket(PORT);
+            receiveByte = new byte[1024];
+            dataPacket = new DatagramPacket(receiveByte, receiveByte.length);
+            receiveStr = "";
+            int i = 0;
+            while (i == 0)// 无数据，则循环
+
+            {
+                dataSocket.receive(dataPacket);
+                i = dataPacket.getLength();
+                // 接收数据
+
+                if (i > 0) {
+                    // 指定接收到数据的长度,可使接收数据正常显示,开始时很容易忽略这一点
+                	System.out.println(i);
+                	byte[] data = dataPacket.getData();
+                	for(byte b : data) {
+                		System.out.printf("%d ", (int) b);
+                	}
+                	
+                    receiveStr = new String(receiveByte, 0, dataPacket.getLength());
+                    System.out.println(receiveStr);
+                    i = 0;// 循环接收
+
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String args[]) {
+        new UDPServer();
+    }
+}

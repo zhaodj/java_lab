@@ -1,0 +1,41 @@
+option java_generic_services = true;
+option java_package = "com.zhaodj.foo.protobuf";
+option java_outer_classname = "DemoProtocol";
+
+message User{
+	required string id=1;
+}
+
+message Token{
+	required string token=1;
+}
+
+message Host{
+	required string host=1;
+	required int32 port=2;
+}
+
+message Session{
+	required string userId=1;
+	required string host=2;
+	required int32 port=3;
+	required int32 roomId=4;
+}
+
+message Result{
+	required int32 code=1;
+}
+
+service LoginService{
+	rpc validate(Token) returns (Result);//验证token
+}
+
+service CentralService{
+	rpc allocate(User) returns (Host);//分配host server
+	rpc record(Session) returns (Result);//记录会话	
+	rpc remove(User) returns (Result);//删除会话
+}
+
+service HostService{
+	rpc disconnect(User) returns (Result);//断开某个用户的连接
+}
