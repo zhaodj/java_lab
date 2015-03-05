@@ -30,6 +30,7 @@ public class Consumer {
         private String uri;
         private String exchange;
         private String route;
+        private int tryCount = 0;
         
         private QueueingConsumer consumer;
         
@@ -37,9 +38,11 @@ public class Consumer {
             this.uri = uri;
             this.exchange = exchangeName;
             this.route = route;
+            restart();
         }
         
         private void restart(){
+            tryCount++;
             ConnectionFactory factory = new ConnectionFactory();
             try {
                 factory.setUri(uri);
@@ -53,11 +56,14 @@ public class Consumer {
 
                 consumer = new QueueingConsumer(channel);
                 channel.basicConsume(queueName, true, consumer);
+                tryCount = 0;
             } catch (Exception e1) {
                 e1.printStackTrace();
                 try {
                     Thread.sleep(5000);
-                    restart();
+                    if(tryCount <= 5){
+                        restart();
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

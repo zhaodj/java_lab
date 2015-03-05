@@ -15,7 +15,7 @@ public class ClusterDemo {
                 Random random = new Random();
                 while(true){
                     String route = routes[random.nextInt(2)];
-                    producer.dispatch(route, producer.getCurUri() + ":" + exchange + ":" + route + ":" + System.currentTimeMillis());
+                    producer.dispatch(route, Thread.currentThread().getName() + ":" + producer.getCurUri() + ":" + exchange + ":" + route + ":" + System.currentTimeMillis());
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException e) {
@@ -24,12 +24,14 @@ public class ClusterDemo {
                 }
             }
             
-        },threadName);
+        },threadName).start();
     }
     
     public static void main(String[] args){
         List<String> uris = new ArrayList<String>();
-        String exchange = "";
+        uris.add("amqp://guest:guest@172.17.0.4:5672");
+        uris.add("amqp://guest:guest@172.17.0.3:5672");
+        String exchange = "cluster-route-exchange";
         String[] routes = new String[]{"host1", "host2"};
         startProducer(uris, exchange, routes, "p1");
         startProducer(uris, exchange, routes, "p2");
