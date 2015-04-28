@@ -2,6 +2,8 @@ package com.zhaodj.foo;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -63,7 +65,23 @@ public class TextDemo {
 	}
 	
 	public static void main(String[] args) throws UnsupportedEncodingException{
-		testControl();
+	    byte[] b1 = {-30,-102,-67};
+	    byte[] b2 = {-18,-128,-104};
+	    byte[] b3 = {-16,-97,-113,-128}; 
+	    byte[] b4 = {-18,-112,-86};
+	    String[] ios5emoji = new String[]{new String(b1,"utf-8"),new String(b3,"utf-8")}; 
+	    String[] ios4emoji = new String[]{new String(b2,"utf-8"),new String(b4,"utf-8")};
+	    System.out.println(Arrays.asList(ios5emoji));
+	    System.out.println(Arrays.asList(ios4emoji));
+	    byte[] testbytes = {105,111,115,-30,-102,-67,32,36,-18,-128,-104,32,36,-16,-97,-113,-128,32,36,-18,-112,-86};  
+        String tmpstr = new String(testbytes,"utf-8"); 
+        System.out.println(tmpstr.length());
+        for (int i=0;i<tmpstr.length();i++) {
+            System.out.print(tmpstr.charAt(i));
+            System.out.println(Character.isBmpCodePoint(tmpstr.codePointAt(i)));
+        }
+        System.out.println(tmpstr);  
+	    //testControl();
 	}
 
 }

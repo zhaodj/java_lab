@@ -42,15 +42,37 @@ public class SentinelDemo {
 	}
 	
 	public static void main(String[] args){
-		Set<String> sentinels = new HashSet<String>();
+		final Set<String> sentinels = new HashSet<String>();
 		sentinels.add("127.0.0.1:9001");
 		sentinels.add("127.0.0.1:9002");
 		sentinels.add("127.0.0.1:9003");
-		testSentinel("mymaster", sentinels);
-		List<String> masters = new ArrayList<String>();
+		new Thread(new Runnable(){
+
+            @Override
+            public void run() {
+                testSentinel("mymaster", sentinels);
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }}).start();
+		final List<String> masters = new ArrayList<String>();
 		masters.add("mymaster");
 		masters.add("myshard");
-		testShardedSentinel(masters, sentinels);
+		new Thread(new Runnable(){
+
+            @Override
+            public void run() {
+                testShardedSentinel(masters, sentinels);
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+		    
+		}).start();
 	}
 
 }

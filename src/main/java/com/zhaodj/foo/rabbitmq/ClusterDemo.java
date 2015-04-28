@@ -29,8 +29,8 @@ public class ClusterDemo {
     
     public static void main(String[] args){
         List<String> uris = new ArrayList<String>();
-        uris.add("amqp://guest:guest@172.17.0.4:5672");
-        uris.add("amqp://guest:guest@172.17.0.3:5672");
+        uris.add("amqp://guest:guest@172.17.0.41:5672");
+        uris.add("amqp://guest:guest@172.17.0.42:5672");
         String exchange = "cluster-route-exchange";
         String[] routes = new String[]{"host1", "host2"};
         startProducer(uris, exchange, routes, "p1");
