@@ -53,6 +53,7 @@ public class DateCal {
 		Date startDate = DateUtils.addDays(date, -25);
 		System.out.println(calRewardNum(date, startDate));
 		Calendar calendar = Calendar.getInstance();
+		System.out.println(calendar.get(Calendar.WEEK_OF_YEAR));
 		calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 		System.out.println(DateFormatUtils.format(calendar, "yyyy-MM-dd HH:mm:ss"));
 		System.out.println(DateFormatUtils.format(getNowWeekMonday(calendar.getTime()), "yyyy-MM-dd HH:mm:ss"));
