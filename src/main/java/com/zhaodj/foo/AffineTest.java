@@ -31,7 +31,7 @@ public class AffineTest extends Applet implements ItemListener{
         translateFirst.addItemListener(this);
         p.add(translateFirst);
         add(p, BorderLayout.SOUTH);
-        rect = new Rectangle2D.Float(-0.5f, -0.5f, 1.0f, 1.0f);
+        rect = new Rectangle2D.Float(10f, 10f, 1.0f, 1.0f);
     }
 
     public void paint(Graphics g) {
@@ -69,6 +69,7 @@ public class AffineTest extends Applet implements ItemListener{
     }
 
     private void paintTestB(Graphics g){
+        System.out.println("=============================");
         Graphics2D g2d = (Graphics2D)g;
         Random r = new Random();
 
@@ -76,13 +77,37 @@ public class AffineTest extends Applet implements ItemListener{
 //        g2d.setColor(new Color(r.nextInt()));
 //        g2d.draw(rect);
 
-        AffineTransform fontAT = new AffineTransform();
-        double shx = (Math.random() - 0.5D) * 0.6D;
-        fontAT.setToShear(shx, 0.0D);
-        g2d.transform(fontAT);
-        g2d.scale(100, 100);
-        g2d.setColor(new Color(r.nextInt()));
-        g2d.draw(rect);
+        g2d.translate(0, 100);
+        double prex = 0;
+        for(int i=0;i<4;i++){
+            AffineTransform fontAT = new AffineTransform();
+            double shx = (Math.random() - 0.5D) * 0.6D;
+            System.out.println(shx);
+            g2d.transform(fontAT);
+            boolean rotate = rotateFirst.getState();
+            if(rotate){
+                fontAT.setToShear(prex, 0.0D);
+            }else{
+                fontAT.setToShear(0.0D, prex);
+            }
+            g2d.transform(fontAT);
+            if(rotate){
+                fontAT.setToShear(shx, 0.0D);
+            }else{
+                fontAT.setToShear(0.0D, shx);
+            }
+            g2d.translate(50, 0);
+            g2d.transform(fontAT);
+            //g2d.setTransform(fontAT);
+            g2d.setColor(new Color(r.nextInt()));
+            g2d.draw(new Rectangle2D.Float(0, 0, 40f, 40f));
+            prex = -shx;
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
