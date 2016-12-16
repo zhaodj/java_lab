@@ -3,11 +3,12 @@ package com.zhaodj.foo.jackson;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationConfig;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +23,7 @@ public class JSONUtil {
 
         static {
                 mapper.configure(
-                                DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES,
+                                DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
                                 false);
         }
 

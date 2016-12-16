@@ -1,7 +1,10 @@
 package com.zhaodj.foo.jackson;
 
-import org.codehaus.jackson.annotate.JsonTypeInfo;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,6 +14,9 @@ import java.util.List;
  * Created by zhaodaojun on 16/5/13.
  */
 public class PolymorphicType {
+
+    private static ObjectMapper mapper =  new ObjectMapper();
+
     @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
     public static class Base{
 
@@ -91,7 +97,57 @@ public class PolymorphicType {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property = "type")
+    @JsonSubTypes({
+            @JsonSubTypes.Type(name = "int", value=TypeInt.class),
+            @JsonSubTypes.Type(name = "string", value=TypeString.class)
+    })
+    public static class TypeBase{
+
+    }
+
+    @JsonTypeName("int")
+    public static class TypeInt extends TypeBase{
+
+        private int value;
+
+        public TypeInt(){}
+
+        public TypeInt(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+    }
+
+    @JsonTypeName("string")
+    public static class TypeString extends TypeBase{
+
+        private String value;
+
+        public TypeString(){}
+
+        public TypeString(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+
+    }
+
+    public static void testCombination() throws IOException {
         Combination demo = new Combination();
         Condition cond = new Condition();
         cond.setField("category");
@@ -100,7 +156,6 @@ public class PolymorphicType {
         subComb.addCondition(new Condition("price", ">", 99.9));
         demo.addCondition(cond);
         demo.addCondition(subComb);
-        ObjectMapper mapper =  new ObjectMapper();
         String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(demo);
         System.out.println(json);
         Combination parseDemo = mapper.readValue(json, Combination.class);
@@ -108,6 +163,25 @@ public class PolymorphicType {
         for(Base obj : parseDemo.getConditions()){
             System.out.println(obj.getClass());
         }
+
+    }
+
+    public static void testType() throws IOException {
+        List<TypeBase> list = new ArrayList<>();
+        list.add(new TypeInt(1));
+        list.add(new TypeString("test"));
+        String json = mapper.writerFor(new TypeReference<List<TypeBase>>() {}).withDefaultPrettyPrinter().writeValueAsString(list);
+        System.out.println(json);
+        List<TypeBase> de = mapper.readValue(json, new TypeReference<List<TypeBase>>() {
+        });
+        for(TypeBase b : de){
+            System.out.println(b.getClass());
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        testCombination();
+        testType();
     }
 
 }
